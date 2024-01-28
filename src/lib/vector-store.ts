@@ -3,8 +3,6 @@ import { Pinecone } from "@pinecone-database/pinecone";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import { PineconeStore } from "@langchain/pinecone";
 
-type Doc<T> = T & { id: string };
-
 export async function embedAndStoreDoc(
 	client: Pinecone,
 	// @ts-ignore
