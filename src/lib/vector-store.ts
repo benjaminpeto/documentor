@@ -22,3 +22,19 @@ export async function embedAndStoreDoc(
 		throw new Error("Embedding and storing document FAILED!");
 	}
 }
+
+export async function getVectorStore(client: Pinecone) {
+	try {
+		const embeddings = new OpenAIEmbeddings();
+		const index = client.Index(env.PINECONE_INDEX_NAME);
+
+		const vectorStore = await PineconeStore.fromExistingIndex(embeddings, {
+			pineconeIndex: index,
+			textKey: "text",
+		});
+		return vectorStore;
+	} catch (e) {
+		console.error("error ", e);
+		throw new Error("There was an issue with the vector store!");
+	}
+}
