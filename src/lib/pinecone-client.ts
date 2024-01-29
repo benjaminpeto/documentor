@@ -4,55 +4,33 @@ import { delay } from "./utils";
 
 let pineconeClientInstance: Pinecone | null = null;
 
-async function createIndex(client: Pinecone, indexName: string) {
+async function createIndex(): Promise<Pinecone> {
 	try {
-		const pc = new Pinecone();
-		await pc.createIndex({
-			name: indexName,
+		const pineconeClient = new Pinecone({ apiKey: env.PINECONE_API_KEY });
+		await pineconeClient.createIndex({
+			name: env.PINECONE_INDEX_NAME,
 			dimension: 1536,
 			metric: "cosine",
 			spec: {
-				serverless: {
-					cloud: "aws",
-					region: "us-west-2",
+				pod: {
+					environment: env.PINECONE_ENVIRONMENT,
+					podType: "p1.x1",
 				},
 			},
 		});
-
 		console.log(
 			`Waiting for ${env.INDEX_INIT_TIMEOUT} seconds for index initialization to complete...`
 		);
 		await delay(env.INDEX_INIT_TIMEOUT);
 		console.log("Index created!!");
+		return pineconeClient;
 	} catch (error) {
 		console.error("error ", error);
 		throw new Error("Index creation failed");
 	}
 }
 
-async function initPineconeClient() {
-	try {
-		const pineconeClient = new Pinecone({
-			apiKey: env.PINECONE_API_KEY,
-		});
-		const indexName = env.PINECONE_INDEX_NAME;
-		const existingIndexes = await pineconeClient.listIndexes();
-
-		if (!existingIndexes) {
-			createIndex(pineconeClient, indexName);
-		} else {
-			console.log("Index already exists");
-		}
-		return pineconeClient;
-	} catch (error) {
-		console.error("error ", error);
-		throw new Error("Pinecone client initialization failed");
-	}
-}
-
 export async function getPineconeClient() {
-	if (!pineconeClientInstance) {
-		pineconeClientInstance = await initPineconeClient();
-	}
+	pineconeClientInstance = await createIndex();
 	return pineconeClientInstance;
 }

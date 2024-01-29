@@ -1,6 +1,6 @@
 import { env } from "./config";
 import { Pinecone } from "@pinecone-database/pinecone";
-import { OpenAIEmbeddings } from "langchain/embeddings/openai";
+import { OpenAIEmbeddings } from "@langchain/openai";
 import { PineconeStore } from "@langchain/pinecone";
 
 export async function embedAndStoreDoc(
@@ -15,7 +15,6 @@ export async function embedAndStoreDoc(
 		// Create embedding from PDF
 		await PineconeStore.fromDocuments(docs, embeddings, {
 			pineconeIndex: index,
-			namespace: env.PINECONE_NAME_SPACE,
 			textKey: "text",
 		});
 	} catch (e) {
