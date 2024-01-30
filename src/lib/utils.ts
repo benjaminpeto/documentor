@@ -38,7 +38,7 @@ export const initialMessages: Message[] = [
 	{
 		role: "assistant",
 		content:
-			"Hello, I am DocuMentor.ai. I am here to help you with your documentation needs. How can I help you today?",
+			"Hello, I am DocuMentor.ai. I am here to help you with understanding your document. How can I help you today?",
 		id: "1",
 	},
 ];
