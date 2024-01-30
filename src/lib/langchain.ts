@@ -37,10 +37,13 @@ export async function callChain({ question, chatHistory }: callChainArgs) {
 			}
 		);
 		chain
-			.invoke({
-				question: sanitisedQuestion,
-				chat_history: chatHistory,
-			}) // .[handlers]
+			.call(
+				{
+					question: sanitisedQuestion,
+					chat_history: chatHistory,
+				},
+				[handlers]
+			)
 			.then(async (res) => {
 				const sourceDocuments = res?.sourceDocuments;
 				const firstTwoDocuments = sourceDocuments.slice(0, 2);
